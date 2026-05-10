@@ -1,0 +1,43 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'                  version '2.2.0'
+    id 'org.jetbrains.kotlin.plugin.serialization'  version '2.2.0'
+    id 'maven-publish'
+}
+
+group   = 'org.foundrysdk'
+version = project.version
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+        freeCompilerArgs.add('-Xjsr305=strict')
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId    = 'org.foundrysdk'
+            artifactId = 'foundry-sdk'
+            version    = project.version
+            from components.java
+        }
+    }
+}
